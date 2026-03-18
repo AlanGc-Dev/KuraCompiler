@@ -1,0 +1,85 @@
+fn crear_token(tipo, valor) {
+    return { "tipo": tipo, "valor": valor };
+}
+
+fn lexer(codigo) {
+    let mut tokens = [];
+    let mut i = 0;
+    let longitud = len(codigo);
+
+    while i < longitud {
+        let c = char_at(codigo, i);
+
+        if c == " " { i = i + 1; }
+        else if c == "\n" { i = i + 1; }
+        else if c == "\r" { i = i + 1; }
+        else if c == "\t" { i = i + 1; }
+        
+        else if c == "=" && char_at(codigo, i + 1) == "=" {
+            tokens = push(tokens, crear_token("Igualdad", "=="));
+            i = i + 2;
+        }
+        else if c == "&" && char_at(codigo, i + 1) == "&" {
+            tokens = push(tokens, crear_token("And", "&&"));
+            i = i + 2;
+        }
+        else if c == "=" { tokens = push(tokens, crear_token("Asignacion", "=")); i = i + 1; }
+        else if c == ";" { tokens = push(tokens, crear_token("PuntoYComa", ";")); i = i + 1; }
+        else if c == "+" { tokens = push(tokens, crear_token("Suma", "+")); i = i + 1; }
+        else if c == "-" { tokens = push(tokens, crear_token("Resta", "-")); i = i + 1; }
+        
+        // ¡NUEVO! Reconocer paréntesis
+        else if c == "(" { tokens = push(tokens, crear_token("ParentesisAbre", "(")); i = i + 1; }
+        else if c == ")" { tokens = push(tokens, crear_token("ParentesisCierra", ")")); i = i + 1; }
+        else if c == "\"" {
+            let mut texto = "";
+            i = i + 1; // Saltamos la primera comilla de apertura
+            
+            while i < longitud {
+                let actual_char = char_at(codigo, i);
+                if actual_char != "\"" {
+                    texto = texto + actual_char;
+                    i = i + 1;
+                } else {
+                    break; // Encontramos la comilla de cierre
+                }
+            }
+            
+            tokens = push(tokens, crear_token("Cadena", texto));
+            i = i + 1; // Saltamos la comilla de cierre para no volver a leerla
+        }
+        
+        else if es_letra(c) {
+            let mut identificador = "";
+            while i < longitud {
+                let actual = char_at(codigo, i);
+                if es_letra(actual) || es_numero(actual) || actual == "_" {
+                    identificador = identificador + actual;
+                    i = i + 1;
+                } else { break; }
+            }
+
+            if identificador == "let" { tokens = push(tokens, crear_token("Let", "let")); }
+            else if identificador == "mut" { tokens = push(tokens, crear_token("Mut", "mut")); }
+            else if identificador == "return" { tokens = push(tokens, crear_token("Return", "return")); }
+            // ¡NUEVO! Reconocer la palabra clave print
+            else if identificador == "print" { tokens = push(tokens, crear_token("Print", "print")); }
+            else { tokens = push(tokens, crear_token("Identificador", identificador)); }
+        }
+        else if es_numero(c) {
+            let mut numero_str = "";
+            while i < longitud {
+                let actual_num = char_at(codigo, i);
+                if es_numero(actual_num) {
+                    numero_str = numero_str + actual_num;
+                    i = i + 1;
+                } else { break; }
+            }
+            tokens = push(tokens, crear_token("Entero", a_numero(numero_str)));
+        }
+        else { i = i + 1; }
+    }
+    
+    tokens = push(tokens, crear_token("FinDeArchivo", "EOF"));
+    return tokens;
+}

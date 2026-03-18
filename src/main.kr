@@ -1,0 +1,14 @@
+import { lexer, crear_token } from "lexer.kr";
+import { parsear_codigo, crear_nodo_let, crear_nodo_print, parsear_expresion, crear_nodo_entero, crear_nodo_operacion, crear_nodo_identificador, crear_nodo_cadena } from "parser.kr";
+import { evaluar_ast, evaluar_expresion } from "evaluator.kr";
+
+fn main() {
+    // Vamos a unir dos cadenas y un espacio
+    let codigo_fuente = "let parte1 = \"Hola \"; let parte2 = \"Mundo Kura!\"; let saludo = parte1 + parte2; print(saludo);";
+    
+    let mis_tokens = lexer(codigo_fuente);
+    let mi_ast = parsear_codigo(mis_tokens);
+    let memoria_final = evaluar_ast(mi_ast);
+}
+
+main();

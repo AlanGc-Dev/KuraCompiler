@@ -1,0 +1,112 @@
+fn crear_nodo_let(nombre, valor_nodo) {
+    return { "tipo_nodo": "DeclaracionLet", "nombre": nombre, "valor": valor_nodo };
+}
+
+fn crear_nodo_entero(valor) {
+    return { "tipo_nodo": "Entero", "valor": valor };
+}
+
+fn crear_nodo_identificador(nombre) {
+    return { "tipo_nodo": "Identificador", "valor": nombre };
+}
+
+fn crear_nodo_operacion(izq, op, der) {
+    return { "tipo_nodo": "Operacion", "izquierda": izq, "operador": op, "derecha": der };
+}
+fn crear_nodo_print(valor_nodo) {
+    return { "tipo_nodo": "Print", "valor": valor_nodo };
+}
+fn crear_nodo_cadena(texto) {
+    return { "tipo_nodo": "Cadena", "valor": texto };
+}
+
+// ¡NUEVO! La función que entiende matemáticas
+fn parsear_expresion(tokens, indice_actual) {
+    let token = tokens[indice_actual];
+    let mut nodo_izquierdo = null;
+
+    if token["tipo"] == "Entero" {
+        nodo_izquierdo = crear_nodo_entero(token["valor"]);
+    } else if token["tipo"] == "Identificador" {
+        nodo_izquierdo = crear_nodo_identificador(token["valor"]);
+    } else if token["tipo"] == "Cadena" { // <-- ¡NUEVO!
+        nodo_izquierdo = crear_nodo_cadena(token["valor"]);
+    }
+
+    let indice_siguiente = indice_actual + 1;
+    let token_siguiente = tokens[indice_siguiente];
+
+    // ⚠️ EL TRUCO: Separar los IF para evitar el bug de precedencia de Rust ⚠️
+    let mut es_matematica = false;
+    if token_siguiente["tipo"] == "Suma" {
+        es_matematica = true;
+    } else if token_siguiente["tipo"] == "Resta" {
+        es_matematica = true;
+    }
+
+    // Ahora evaluamos la bandera limpia
+    if es_matematica {
+        let operador = token_siguiente["valor"];
+        let indice_derecho = indice_siguiente + 1;
+        let token_derecho = tokens[indice_derecho];
+        let mut nodo_derecho = null;
+        
+       if token_derecho["tipo"] == "Entero" {
+            nodo_derecho = crear_nodo_entero(token_derecho["valor"]);
+        } else if token_derecho["tipo"] == "Identificador" {
+            nodo_derecho = crear_nodo_identificador(token_derecho["valor"]);
+        } else if token_derecho["tipo"] == "Cadena" { // <-- ¡NUEVO!
+            nodo_derecho = crear_nodo_cadena(token_derecho["valor"]);
+        }
+
+        let nodo_operacion = crear_nodo_operacion(nodo_izquierdo, operador, nodo_derecho);
+        
+        return { "nodo": nodo_operacion, "nuevo_indice": indice_derecho + 1 };
+    }
+
+    return { "nodo": nodo_izquierdo, "nuevo_indice": indice_siguiente };
+}
+
+fn parsear_codigo(tokens) {
+    let mut ast = [];
+    let mut i = 0;
+    let total_tokens = len(tokens);
+
+    while i < total_tokens {
+        let token_actual = tokens[i];
+        if token_actual["tipo"] == "FinDeArchivo" { break; }
+
+        if token_actual["tipo"] == "Let" {
+            let token_nombre = tokens[i + 1];
+            let indice_valor = i + 3; // Saltamos 'let', nombre, y '='
+            
+            let resultado_expr = parsear_expresion(tokens, indice_valor);
+            let nodo_valor = resultado_expr["nodo"];
+            
+            let nodo = crear_nodo_let(token_nombre["valor"], nodo_valor);
+            ast = push(ast, nodo);
+            
+            i = resultado_expr["nuevo_indice"] + 1; // Saltamos la expresión y el ';'
+        } 
+        // ¡NUEVO! Si encontramos un 'print'
+        else if token_actual["tipo"] == "Print" {
+            // tokens[i] es 'print', tokens[i+1] es '('
+            let indice_valor = i + 2; 
+            
+            // Reutilizamos nuestra magia matemática para leer lo que está dentro de los paréntesis
+            let resultado_expr = parsear_expresion(tokens, indice_valor);
+            let nodo_valor = resultado_expr["nodo"];
+            
+            let nodo = crear_nodo_print(nodo_valor);
+            ast = push(ast, nodo);
+            
+            // resultado_expr["nuevo_indice"] nos deja justo en el ')'.
+            // Le sumamos 2 para saltar el ')' y el ';'
+            i = resultado_expr["nuevo_indice"] + 2; 
+        } 
+        else {
+            i = i + 1;
+        }
+    }
+    return ast;
+}
