@@ -11,6 +11,7 @@ fn crear_nodo_while(condicion, cuerpo) { return { "tipo_nodo": "While", "condici
 fn crear_nodo_funcion(nombre, parametros, cuerpo) { return { "tipo_nodo": "Funcion", "nombre": nombre, "parametros": parametros, "cuerpo": cuerpo }; }
 fn crear_nodo_return(valor) { return { "tipo_nodo": "Return", "valor": valor }; }
 fn crear_nodo_llamada(nombre, argumentos) { return { "tipo_nodo": "Llamada", "nombre": nombre, "argumentos": argumentos }; }
+fn crear_nodo_arreglo(elementos) { return { "tipo_nodo": "Arreglo", "elementos": elementos }; }
 
 fn parsear_expresion(tokens, indice_actual) {
     let token = tokens[indice_actual];
@@ -44,6 +45,26 @@ fn parsear_expresion(tokens, indice_actual) {
         } else {
             nodo_izquierdo = crear_nodo_identificador(token["valor"]);
         }
+    }
+    else if token["tipo"] == "CorcheteAbre" {
+        let mut elementos = [];
+        let mut j = indice_siguiente;
+        let total_tk = len(tokens);
+        
+        while j < total_tk {
+            if tokens[j]["tipo"] == "CorcheteCierra" {
+                break;
+            }
+            if tokens[j]["tipo"] == "Coma" {
+                j = j + 1;
+            } else {
+                let res_elem = parsear_expresion(tokens, j);
+                elementos = push(elementos, res_elem["nodo"]);
+                j = res_elem["nuevo_indice"];
+            }
+        }
+        nodo_izquierdo = crear_nodo_arreglo(elementos);
+        indice_siguiente = j + 1; // Saltamos el CorcheteCierra
     }
 
     let token_siguiente = tokens[indice_siguiente];
@@ -108,7 +129,7 @@ fn parsear_bloque(tokens, inicio) {
             ast = push(ast, crear_nodo_while(res_expr["nodo"], res_bloque["ast"]));
             i = res_bloque["nuevo_indice"] + 1; 
         }
-        else if token_actual["tipo"] == "Fn" {
+        else if token_actual["tipo"] == "Fun" {
             let nombre = tokens[i + 1]["valor"];
             let mut parametros = [];
             let mut j = i + 3; 

@@ -31,6 +31,9 @@ fn lexer(codigo) {
         else if c == "(" { tokens = push(tokens, crear_token("ParentesisAbre", "(")); i = i + 1; }
         else if c == ")" { tokens = push(tokens, crear_token("ParentesisCierra", ")")); i = i + 1; }
         else if c == "," { tokens = push(tokens, crear_token("Coma", ",")); i = i + 1; }
+
+        else if c == "[" { tokens = push(tokens, crear_token("CorcheteAbre", "[")); i = i + 1; }
+        else if c == "]" { tokens = push(tokens, crear_token("CorcheteCierra", "]")); i = i + 1; }
         
         // ¡NUEVO! Reconocer llaves y comparadores
         else if c == "{" { tokens = push(tokens, crear_token("LlaveAbre", "{")); i = i + 1; }
@@ -74,7 +77,7 @@ fn lexer(codigo) {
             else if identificador == "if" { tokens = push(tokens, crear_token("If", "if")); }
             else if identificador == "else" { tokens = push(tokens, crear_token("Else", "else")); }
             else if identificador == "while" { tokens = push(tokens, crear_token("While", "while")); }
-            else if identificador == "fn" { tokens = push(tokens, crear_token("Fn", "fn")); }
+            else if identificador == "fun" { tokens = push(tokens, crear_token("Fun", "fun")); }
             else if identificador == "true" { tokens = push(tokens, crear_token("Booleano", true)); }
             else if identificador == "false" { tokens = push(tokens, crear_token("Booleano", false)); }
             else { tokens = push(tokens, crear_token("Identificador", identificador)); }
