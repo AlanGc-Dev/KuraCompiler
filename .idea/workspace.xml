@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="ALL" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ad13a18e-81da-4237-b9ce-c8741e754d9d" name="Changes" comment="" />
+    <list default="true" id="ad13a18e-81da-4237-b9ce-c8741e754d9d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/evaluator.kr" beforeDir="false" afterPath="$PROJECT_DIR$/src/evaluator.kr" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lexer.kr" beforeDir="false" afterPath="$PROJECT_DIR$/src/lexer.kr" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.kr" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.kr" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/parser.kr" beforeDir="false" afterPath="$PROJECT_DIR$/src/parser.kr" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -41,6 +47,7 @@
     "RunOnceActivity.MCP Project settings loaded": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.rust.reset.selective.auto.import": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
@@ -79,7 +86,8 @@
       <workItem from="1773721285309" duration="16000" />
       <workItem from="1773721370309" duration="312000" />
       <workItem from="1773721977354" duration="1627000" />
-      <workItem from="1773805914352" duration="2368000" />
+      <workItem from="1773805914352" duration="2858000" />
+      <workItem from="1773886577475" duration="21000" />
     </task>
     <servers />
   </component>

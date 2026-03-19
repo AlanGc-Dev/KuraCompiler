@@ -1,14 +1,17 @@
 import { lexer, crear_token } from "lexer.kr";
-import { parsear_codigo, crear_nodo_let, crear_nodo_print, parsear_expresion, crear_nodo_entero, crear_nodo_operacion, crear_nodo_identificador, crear_nodo_cadena } from "parser.kr";
-import { evaluar_ast, evaluar_expresion } from "evaluator.kr";
+import { parsear_codigo, parsear_bloque, crear_nodo_let, crear_nodo_print, parsear_expresion, crear_nodo_entero, crear_nodo_operacion, crear_nodo_identificador, crear_nodo_cadena, crear_nodo_booleano, crear_nodo_reasignacion, crear_nodo_if, crear_nodo_while, crear_nodo_funcion, crear_nodo_return, crear_nodo_llamada } from "parser.kr";
+// ¡Traemos de vuelta al Evaluador!
+import { evaluar_ast, evaluar_bloque, evaluar_expresion } from "evaluator.kr";
 
 fn main() {
-    // Vamos a unir dos cadenas y un espacio
-    let codigo_fuente = "let parte1 = \"Hola \"; let parte2 = \"Mundo Kura!\"; let saludo = parte1 + parte2; print(saludo);";
+    // Código con 1 millón de ciclos
+    let codigo_fuente = "print(\"Iniciando 1 millon de ciclos en puro Kura...\"); let mut i = 0; while i < 1000000 { i = i + 1; } print(\"Terminado. Total:\"); print(i);";
     
     let mis_tokens = lexer(codigo_fuente);
     let mi_ast = parsear_codigo(mis_tokens);
-    let memoria_final = evaluar_ast(mi_ast);
+    
+    // AQUÍ ESTÁ LA MAGIA: Ejecutamos el árbol directamente en Kura
+    evaluar_ast(mi_ast);
 }
 
 main();
